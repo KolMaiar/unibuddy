@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UniBuddy</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1c2a3a;--mut:#5f6f82;--line:#d6dfea;--pri:#1f5fa8;--pri-ink:#fff;--hd:#183a63;--soft:#e8eff8;--ok:#1b7a4b;--okbg:#e6f3ec;--err:#b3261e;--errbg:#fbeceb;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="dark"]{--bg:#0f1826;--card:#16233a;--ink:#e4ebf5;--mut:#9fb0c6;--line:#28405f;--pri:#6aa7ea;--pri-ink:#0b1626;--hd:#0a1220;--soft:#1d2f4b;--ok:#5fcf98;--okbg:#12291f;--err:#ff8f86;--errbg:#33191a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:700}
+header{background:var(--hd);color:#fff}
+.bar{max-width:1000px;margin:auto;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font:700 21px Georgia,serif;color:#fff;background:none;border:0;padding:0;cursor:pointer}
+nav{display:flex;gap:2px;flex-wrap:wrap}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:#c9dcf3;font:inherit;font-weight:600;padding:8px 10px;cursor:pointer}
+nav button[aria-current="page"]{color:#fff;border-bottom-color:#fff}
+.hd{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+header .chip{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+main{max-width:1000px;margin:auto;padding:24px 20px 60px}
+h1{font-size:28px;margin:0 0 6px}h2{font-size:20px;margin:0 0 8px}
+p.lead{color:var(--mut);margin:0 0 20px}
+.hero{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--pri);border-radius:6px;padding:18px 22px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px}
+.stat span{display:block;color:var(--mut);font-size:13px}.stat b{font:700 30px Georgia,serif;color:var(--pri)}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--soft);color:var(--pri);border:1px solid var(--line)}
+button.btn,a.btn{display:inline-block;font:inherit;font-weight:600;border-radius:6px;padding:9px 16px;border:1px solid var(--pri);background:var(--pri);color:var(--pri-ink);cursor:pointer;text-decoration:none}
+button.btn.sec{background:none;color:var(--pri)}
+button.btn.dng{background:none;color:var(--err);border-color:var(--err)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.steps{display:flex;gap:8px;margin:0 0 20px;padding:0;list-style:none;flex-wrap:wrap}
+.steps li{font-size:14px;font-weight:600;color:var(--mut);padding:4px 12px;border-radius:4px;border:1px solid var(--line);background:var(--card)}
+.steps li.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.steps li.done{color:var(--ok);border-color:var(--ok)}
+input[type=search],input[type=text],input[type=password],input[type=number],input[type=date],select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:9px 12px}
+label{display:block;font-weight:600;margin:14px 0 6px}
+.chip{font:inherit;font-size:14px;font-weight:600;padding:6px 14px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.avatar{width:48px;height:48px;border-radius:6px;background:var(--soft);color:var(--pri);display:grid;place-items:center;font:700 20px Georgia,serif;flex:none}
+.tag{font-size:13px;background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:1px 8px;margin:0 4px 4px 0;display:inline-block}
+.slots{display:flex;gap:8px;flex-wrap:wrap}
+.slot{font:inherit;font-weight:600;padding:10px 16px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;min-width:84px}
+.slot[aria-pressed="true"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.slot:disabled{text-decoration:line-through;opacity:.45;cursor:not-allowed}
+.err{color:var(--err);background:var(--errbg);padding:8px 12px;border-radius:6px;margin-top:8px;font-weight:600}
+.ok{background:var(--okbg);border:1px solid var(--ok);border-radius:6px;padding:20px}
+.ok h1{color:var(--ok)}
+dl{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;margin:12px 0}dt{color:var(--mut)}dd{margin:0;font-weight:600}
+.cls{display:flex;gap:16px;align-items:flex-start;margin-bottom:10px}
+.tm{min-width:64px;font-weight:700;color:var(--pri);font-size:18px;line-height:1.2}.tm small{color:var(--mut);font-weight:600;font-size:13px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line)}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-size:13px;font-weight:600;background:var(--soft)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:6px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+.fac{font-size:13px;color:var(--mut);margin-top:16px}
+
+input[type=time]{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:9px 12px}
+.space{margin-top:20px}.space-bottom{margin-bottom:20px}.stats{margin:20px 0}.manage-grid{grid-template-columns:1fr 1fr;align-items:start}.form-actions{margin-top:18px;margin-bottom:8px}.muted{color:var(--mut)}.danger{color:var(--err)}.between{justify-content:space-between}.demo-note{color:var(--mut);font-size:13px;margin:24px auto;max-width:960px}.demo-note details{margin-top:10px}summary{cursor:pointer;font-weight:600}.check{display:flex;align-items:center;gap:8px;font-weight:400}.check input{width:18px;height:18px}fieldset{border:1px solid var(--line);border-radius:6px;margin:18px 0 0;padding:12px}legend{font-weight:600}.record{display:flex;gap:14px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:12px 0}.card.record{padding:18px;margin-bottom:10px}.record:last-child{border-bottom:0}.record p{margin:4px 0}.task{margin-bottom:12px}.task p{margin:10px 0}.status-done{background:var(--okbg);color:var(--ok)}.status-overdue{background:var(--errbg);color:var(--err)}.status-doing{background:var(--soft);color:var(--pri)}.reminder{border-left:4px solid var(--pri)}.calendar-layout{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:start}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-bottom:16px}.cal-label{text-align:center;color:var(--mut);font-size:13px;padding:6px 0}.cal-day{position:relative;min-height:57px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;cursor:pointer;text-align:left;padding:7px}.cal-selected{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}.cal-today{box-shadow:inset 0 0 0 2px var(--pri)}.cal-dot{display:block;font-size:11px;font-weight:bold}.agenda{border-top:1px solid var(--line);padding:16px 0}.agenda h3{font-size:16px;margin:8px 0}.multiline{white-space:pre-wrap;overflow-wrap:anywhere}.empty{color:var(--mut);text-align:center;padding:24px}.btn,.chip{white-space:normal}td,dd,.card{overflow-wrap:anywhere}nav button{font-size:14px}.bar{max-width:1120px}
+@media(max-width:650px){.manage-grid,.calendar-layout{grid-template-columns:1fr}.bar{gap:8px;padding:12px}.hd{margin-left:0}nav{order:3;width:100%}nav button{padding:8px}main{padding:20px 12px 40px}.cal-day{min-height:48px;padding:5px}.calendar-grid{gap:3px}.record{flex-wrap:wrap}dl{grid-template-columns:1fr}dd{margin-bottom:8px}.card{padding:14px}h1{font-size:26px}}
+
+.chat-list{max-height:340px;overflow-y:auto;border:1px solid var(--line);border-radius:6px;padding:4px 10px;margin-bottom:10px;background:var(--bg)}.msg{padding:8px 0;border-bottom:1px solid var(--line)}.msg:last-child{border-bottom:0}.msg.me{border-left:3px solid var(--pri);padding-left:8px}.msg .chip{padding:0 8px;font-size:13px}
+#dbst[data-s=err]{background:#b3261e!important;border-color:#b3261e!important}#dbst[data-s=wait]{opacity:.7}#dbst[data-s=off]{border-style:dashed}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<button class="logo" data-a="home">UniBuddy</button>
+<nav aria-label="Main" id="nav"></nav>
+<div class="hd"><span class="chip" id="dbst" role="status" style="cursor:default"></span><button class="chip" id="theme" data-a="theme"></button><button class="chip" id="lang" data-a="lang" aria-label="Language / Язык"></button><button class="chip" id="out" data-a="logout" hidden></button></div>
+</div></header>
+<main id="app"></main>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+var T={
+liT:['Вход в систему','Sign in'],stu:['Студент','Student'],tch:['Преподаватель','Teacher'],lg:['Логин','Login'],pw:['Пароль','Password'],sign:['Войти','Sign in'],out:['Выйти','Log out'],liErr:['Неверный логин или пароль.','Wrong login or password.'],lock:['Слишком много попыток. Подожди ','Too many attempts. Wait '],sec:[' с',' s'],
+thD:['Тёмная тема','Dark theme'],thL:['Светлая тема','Light theme'],
+jr:['Дневник','Diary'],cJr:['Оценки, посещаемость и задания.','Grades, attendance and assignments.'],grades:['Оценки','Grades'],attend:['Посещаемость','Attendance'],assign:['Задания','Assignments'],gpa:['Общий GPA','Overall GPA'],attP:['Посещаемость','Attendance'],avg:['Средний балл','Average'],subj:['Предмет','Subject'],
+demoG:['Оценки — демонстрационные данные.','Grades are sample data for the demo.'],gpaNote:['GPA по шкале 4.0 (среднее по предметам).','GPA on a 4.0 scale (average of subjects).'],noA:['Отметок пока нет.','No records yet.'],noAs:['Заданий пока нет. Преподаватель добавит их здесь.','No assignments yet. Your teacher will add them here.'],due:['Срок: ','Due: '],present:['Присутствовал','Present'],absent:['Отсутствовал','Absent'],late:['Опоздал','Late'],
+tp:['Панель преподавателя','Teacher panel'],tGr:['Оценка','Grade'],tAt:['Посещение','Attendance'],tTs:['Задание и дедлайн','Task and deadline'],choose:['Выбери предмет…','Choose a subject…'],gTitle:['Название работы','Work title'],score:['Балл (0–100)','Score (0–100)'],date:['Дата','Date'],status:['Статус','Status'],add:['Сохранить','Save'],recent:['Последние записи','Recent entries'],tErr:['Заполни все поля. Балл должен быть от 0 до 100.','Fill in all fields. The score must be 0–100.'],saved:['Сохранено','Saved'],deleted:['Удалено','Deleted'],dline:['Дедлайн','Deadline'],
+home:['Главная','Home'],sched:['Расписание','Schedule'],ann:['Объявления','Announcements'],ment:['Наставники','Mentors'],prof:['Профиль','Profile'],map:['Карта','Map'],cMap:['Карта кампуса: найди нужную аудиторию.','Campus map: find the room you need.'],mapLead:['Карта университета. Аудитории в расписании тоже ведут сюда.','University map. Rooms in your schedule lead here too.'],openMap:['Открыть карту в новой вкладке','Open the map in a new tab'],mapHint:['Если карта не отображается ниже, открой её в новой вкладке.','If the map does not appear below, open it in a new tab.'],mapT:['Карта Astana IT University','Astana IT University map'],
+hi:['Привет, ','Hello, '],heroSub:['Всё для первокурсника в одном месте.','Everything a first-year student needs in one place.'],
+cSched:['Твои пары на неделю уже готовы.','Your weekly classes are ready.'],cAnn:['Новости университета и наставников.','News from the university and mentors.'],cMent:['Поговори со старшекурсником, который уже прошёл первый год.','Talk to a senior student who has been through the first year.'],cProf:['Твои данные и образовательная программа.','Your details and study program.'],
+open:['Открыть','Open'],findM:['Найти наставника','Find a mentor'],
+lec:['Лекция','Lecture'],prac:['Практика','Practical'],vol:['Практика (волейбол)','Practical (volleyball)'],online:['Онлайн','Online'],gym:['Спортзал','Gym'],main:['Главный корпус','Main building'],
+schedLead:['Твоё расписание. Выбери день недели.','Your timetable. Choose a day of the week.'],noCls:['В этот день занятий нет.','No classes on this day.'],today:['Сегодня','Today'],
+annLead:['Здесь появляются новые объявления.','New announcements appear here.'],newAnn:['Новое объявление','New announcement'],demo:['Демо для сотрудников и наставников','Demo for staff and mentors'],annT:['Заголовок','Title'],annB:['Текст объявления','Announcement text'],post:['Опубликовать','Post'],annErr:['Заполни заголовок и текст (минимум 5 символов).','Fill in the title and text (at least 5 characters).'],del:['Удалить','Delete'],posted:['Опубликовано','Posted'],you:['Вы','You'],posted2:['Объявление опубликовано','Announcement posted'],removed:['Объявление удалено','Announcement removed'],
+fio:['ФИО','Full name'],barcode:['Баркод','Barcode'],uni:['Университет','University'],progL:['Образовательная программа','Educational program'],progV:['Кибербезопасность','Cybersecurity'],year:['Курс','Year'],yearV:['1 курс','1st year'],
+s1:['Найти наставника','Find a mentor'],s2:['Выбрать время','Choose time'],s3:['Подтвердить','Confirm'],
+mLead:['Выбери старшекурсника, который поможет с вопросами.','Choose a senior student who can answer your questions.'],search:['Поиск по имени, предмету или теме','Search by name, subject or topic'],ph:['например, Python','e.g. Python'],all:['Все','All'],none:['Наставники не найдены.','No mentors found.'],tryAgain:['Попробуй другое слово или выбери «Все».','Try another keyword or choose All.'],clear:['Сбросить поиск и фильтры','Clear search and filters'],
+slotsN:['свободных слотов: ','free time slots: '],noSlots:['Нет свободных слотов','No free slots'],view:['Открыть профиль','View profile'],backM:['← К наставникам','← Back to mentors'],slotsNext:['Свободных слотов в ближайшие 3 дня: ','Free slots in the next 3 days: '],book:['Записаться на 15 минут','Book a 15-minute chat'],
+chooseTime:['Выбери время с ','Choose a time with '],tLead:['Разговор длится 15 минут. Зачёркнутое время занято.','Chats last 15 minutes. Crossed-out times are taken.'],cont:['Продолжить','Continue'],selected:['Выбрано: ','Selected: '],selT:['Выбери время, чтобы продолжить','Select a time to continue'],taken:['занято','taken'],tmr:['Завтра','Tomorrow'],
+backP:['← К профилю','← Back to profile'],chg:['← Изменить время','← Change time'],check:['Проверь и подтверди','Check and confirm'],mentorL:['Наставник','Mentor'],when:['Когда','When'],topicQ:['С чем нужна помощь?','What do you need help with?'],chooseTopic:['Выбери тему…','Choose a topic…'],other:['Другое','Something else'],qLbl:['Твой вопрос наставнику','Your question for the mentor'],qPh:['Напиши 1–2 предложения, чтобы наставник подготовился','Write 1–2 sentences so the mentor can prepare'],
+confirmB:['Подтвердить запись','Confirm booking'],cancel:['Отмена','Cancel'],e1:['Выбери тему, чтобы наставник знал, чем помочь.','Please choose a topic so the mentor knows how to help.'],e2:['Напиши вопрос минимум из 10 символов.','Please write at least 10 characters in your question.'],
+done:['Запись подтверждена!','Booking confirmed!'],doneP:[' увидит твой вопрос и встретится с тобой в выбранное время.',' will see your question and meet you at the chosen time.'],topicL:['Тема','Topic'],qL:['Твой вопрос','Your question'],another:['Найти другого наставника','Find another mentor'],cancelB:['Отменить запись','Cancel this booking'],cancelled:['Запись отменена. Время снова свободно.','Booking cancelled. The time slot is free again.']
+};
+var DN=[['Понедельник','Monday'],['Вторник','Tuesday'],['Среда','Wednesday'],['Четверг','Thursday'],['Пятница','Friday'],['Суббота','Saturday']];
+var DS=[['Пн','Mon'],['Вт','Tue'],['Ср','Wed'],['Чт','Thu'],['Пт','Fri'],['Сб','Sat']];
+var CN={psy:['Психология','Psychology'],soc:['Социология','Sociology'],ict:['Информационно-коммуникационные технологии','Information and Communication Technologies'],dm:['Дискретная математика','Discrete Mathematics'],pe:['Физическая культура','Physical Education'],fl:['Иностранный язык 1 (B2)','Foreign Language 1 (B2)'],ip:['Введение в программирование','Introduction to Programming']};
+var TY={L:'lec',P:'prac',V:'vol'};
+var CL=[
+[0,'10:00','10:50','psy','PSY21-EN-L4','L','Белесова Н.А.','C1.3.370L'],
+[0,'11:00','11:50','soc','SOC21-EN-P27','P','Нұрқанат А.Н.','C1.3.362'],
+[1,'08:00','09:50','ict','ICT51-EN-P14','P','Рақым А.М.','C1.1.361K'],
+[1,'10:00','10:50','psy','PSY21-EN-P10','P','Белесова Н.А.','C1.3.236'],
+[1,'12:00','13:55','dm','DM52-EN-L17','L','Мұхамбетжан М.А.','C1.1.328L'],
+[1,'14:00','15:50','pe','PE21-EN-P209','V','Абенов М.Т.','GYM'],
+[2,'08:00','09:50','fl','FL51-EN-P241','P','Ишмухамбетов Н.А.','C1.1.224P'],
+[2,'20:00','21:50','ict','ICT51-EN-L8','L','Айтмұханбетова Э.А.','ON'],
+[3,'10:00','11:50','ip','IP52-EN-P17','P','Алғыс С.','C1.2.239K'],
+[3,'20:00','21:50','ip','IP52-EN-L13','L','Хаймульдин А.Ф.','ON'],
+[4,'08:00','08:50','soc','SOC21-EN-L19','L','Нұрқанат А.Н.','C1.2.237L'],
+[4,'09:00','09:50','fl','FL51-EN-P241','P','Ишмухамбетов Н.А.','C1.1.224P'],
+[4,'10:00','10:50','dm','DM52-EN-L17','L','Мұхамбетжан М.А.','C1.1.328L'],
+[4,'11:00','11:50','ip','IP52-EN-P17','P','Алғыс С.','C1.2.239K'],
+[4,'20:00','20:50','ict','ICT51-EN-L8','L','Айтмұханбетова Э.А.','ON'],
+[5,'09:00','10:50','dm','DM52-EN-P11','P','Мұхамбетжан М.А.','C1.2.241K'],
+[5,'18:00','19:50','fl','FL51-EN-P241','P','Ишмухамбетов Н.А.','ON']
+];
+var SB=['psy','soc','ict','dm','pe','fl','ip'];
+var U={student:['ALIZHAN','12345'],teacher:['ALIZHAN1','54321']};
+var SEED=[['psy','Quiz 1',88],['psy','Essay',92],['soc','Quiz 1',79],['soc','Discussion',85],['ict','Lab 1',95],['ict','Lab 2',90],['ict','Test 1',84],['dm','Homework 1',72],['dm','Midterm',68],['pe','Volleyball test',96],['fl','Speaking',87],['fl','Writing',81],['ip','Lab 1',98],['ip','Lab 2',93],['ip','Quiz 1',89]];
+var MAP='https://yuujiso.github.io/aitumap/';
+var PR={cy:['Кибербезопасность','Cybersecurity'],se:['Программная инженерия','Software Engineering'],ds:['Наука о данных','Data Science']};
+var M=[
+{id:1,n:['Айгерим С.','Aigerim S.'],y:2,p:'cy',bio:['Прошла первый семестр и поделится советами по Python, срокам и жизни в кампусе.','Survived the first semester and happy to share tips about Python, deadlines and campus life.'],tp:[['Python','Python'],['Дедлайны','Deadlines'],['Жизнь в кампусе','Campus life']],x:['0-14:00','0-16:00','1-15:00']},
+{id:2,n:['Тимур Б.','Timur B.'],y:3,p:'cy',bio:['Играет в CTF и поможет выбрать, что учить в первую очередь: Linux, сети и основы безопасности.','Plays CTFs and helps first-years choose what to learn first: Linux, networks and basic security.'],tp:[['Linux','Linux'],['Сети','Networks'],['CTF','CTF']],x:['0-15:00','0-17:00','1-14:00','1-16:00','1-17:00']},
+{id:3,n:['Дана К.','Dana K.'],y:2,p:'se',bio:['Объяснит Git, основы веба и как планировать неделю между лекциями и домашкой.','Can explain Git, web basics and how to plan your week between lectures and homework.'],tp:[['Git','Git'],['Веб','Web'],['Планирование времени','Time planning']],x:['0-14:00','0-15:00','0-16:00','0-17:00']},
+{id:4,n:['Арман Н.','Arman N.'],y:3,p:'ds',bio:['Помогает с математикой, Python для данных и подготовкой к экзаменам.','Helps with math, Python for data and preparing for exams.'],tp:[['Математика','Math'],['Python','Python'],['Экзамены','Exams']],x:['1-14:00']}
+];
+var days=[1,2,3].map(function(n){var d=new Date();d.setDate(d.getDate()+n);return d});
+var times=['14:00','15:00','16:00','17:00'];
+var g0=new Date().getDay(),TODAY=g0==0?0:g0-1;
+var S={u:null,lr:'student',lf:{l:'',p:''},lerr:'',fails:0,lock:0,th:'light',jt:'gr',tt:'g',tf:{s:'',t:'',v:'',d:'',st:'p'},terr:'',gr:[],at:[],as:[],L:'ru',v:'home',day:TODAY,q:'',f:'All',m:null,d:null,t:null,topic:'',note:'',err:'',booked:[],backs:0,t0:0,tEnd:0,an:[],af:{t:'',b:''},aerr:'',P:{n:'Айсултан Айсултан Айсултан',b:'333333'}};
+var SYS={id:'sys',t:['Добро пожаловать в UniBuddy','Welcome to UniBuddy'],b:['Здесь будут появляться объявления от университета и наставников. Следи за новостями!','Announcements from the university and mentors will appear here. Stay tuned!'],sys:1,d:new Date().toISOString().slice(0,10)};
+var app=document.getElementById('app'),TEST=location.hash==='#test';
+function $(i){return document.getElementById(i)}
+function t(k){return T[k][S.L=='ru'?0:1]}
+function g(v){return Array.isArray(v)?v[S.L=='ru'?0:1]:v}
+function loc(){return S.L=='ru'?'ru-RU':'en-GB'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function toast(m){var e=$('toast');e.textContent=m;e.className='show';clearTimeout(toast.h);toast.h=setTimeout(function(){e.className=''},2500)}
+function save(){try{localStorage.setItem('ub3',JSON.stringify({L:S.L,th:S.th,an:S.an,gr:S.gr,at:S.at,as:S.as}))}catch(e){}}
+function load(){var o={};try{o=JSON.parse(localStorage.getItem('ub3')||'{}')}catch(e){}if(o.L)S.L=o.L;if(o.th)S.th=o.th;S.an=o.an||[];S.at=o.at||[];S.as=o.as||[];S.gr=o.gr||SEED.map(function(x,i){return {id:i+1,s:x[0],t:x[1],v:x[2]}})}
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function avg(x){var a=S.gr.filter(function(r){return r.s==x});return a.length?a.reduce(function(p,r){return p+r.v},0)/a.length:null}
+function pts(p){return p>=95?4:p>=90?3.67:p>=85?3.33:p>=80?3:p>=75?2.67:p>=70?2.33:p>=65?2:p>=60?1.67:p>=55?1.33:p>=50?1:0}
+function gpa(){var a=SB.map(avg).filter(function(x){return x!=null});return a.length?(a.reduce(function(p,x){return p+pts(x)},0)/a.length).toFixed(2):null}
+function attPct(){return S.at.length?Math.round(S.at.filter(function(x){return x.st!='a'}).length/S.at.length*100):null}
+function cnt(x,st){return S.at.filter(function(r){return r.s==x&&r.st==st}).length}
+function left(d){var n=Math.round((new Date(d+'T00:00:00')-new Date(ymd(new Date())+'T00:00:00'))/864e5);return n<0?(S.L=='ru'?'Просрочено на '+(-n)+' дн.':'Overdue by '+(-n)+' d'):n==0?t('today'):n==1?t('tmr'):(S.L=='ru'?'через '+n+' дн.':'in '+n+' days')}
+function loginView(){var lk=Date.now()<S.lock;return '<div class="card" style="max-width:420px;margin:40px auto"><h1>'+t('liT')+'</h1><p class="lead">UniBuddy · AITU</p><div class="row" role="group">'+['student','teacher'].map(function(r){return '<button type="button" class="chip" data-a="lr" data-r="'+r+'" aria-pressed="'+(S.lr==r)+'">'+t(r=='student'?'stu':'tch')+'</button>'}).join('')+'</div><form id="lf"><label for="lg-l">'+t('lg')+'</label><input id="lg-l" type="text" autocomplete="username" value="'+esc(S.lf.l)+'"><label for="lg-p">'+t('pw')+'</label><input id="lg-p" type="password" autocomplete="current-password" value="'+esc(S.lf.p)+'">'+(lk?'<div class="err" role="alert">'+t('lock')+Math.ceil((S.lock-Date.now())/1000)+t('sec')+'</div>':S.lerr?'<div class="err" role="alert">'+t(S.lerr)+'</div>':'')+'<div style="margin-top:16px"><button class="btn" type="button" data-local-submit'+(lk?' disabled':'')+'>'+t('sign')+'</button></div></form></div>'}
+function doLogin(){if(Date.now()<S.lock)return;var c=U[S.lr];if(S.lf.l.trim().toUpperCase()==c[0]&&S.lf.p==c[1]){S.u=S.lr;S.fails=0;S.lerr='';S.lf={l:'',p:''};S.v=S.u=='teacher'?'tp':'home';render()}else{S.fails++;if(S.fails>=5){S.lock=Date.now()+30000;S.fails=0}S.lerr='liErr';S.lf.p='';render(1)}}
+function mentor(){return M.filter(function(x){return x.id===S.m})[0]}
+function dl(i){return (i==0?t('tmr')+', ':'')+days[i].toLocaleDateString(loc(),{weekday:'short',day:'numeric',month:'short'})}
+function taken(m,d,tm){return m.x.indexOf(d+'-'+tm)>-1||S.booked.indexOf(m.id+'|'+d+'|'+tm)>-1}
+function free(m){var c=0;for(var d=0;d<3;d++)times.forEach(function(tm){if(!taken(m,d,tm))c++});return c}
+function yr(m){return S.L=='ru'?m.y+' курс':['','','2nd','3rd'][m.y]+' year'}
+function room(r){return r=='ON'?' '+t('online'):' <a href="'+MAP+'" target="_blank" rel="noopener" style="color:var(--pri);font-weight:600">'+(r=='GYM'?t('gym'):r)+' ('+t('main')+') ↗</a>'}
+function bars(s){var x=0,o='';for(var i=0;i<s.length;i++){var n=+s[i]+1;for(var k=0;k<4;k++){var w=((n*(k+3))%3)+1;if(k%2==0)o+='<rect x="'+x+'" width="'+w+'" height="46"/>';x+=w+1}x+=2}return '<svg viewBox="0 0 '+x+' 46" style="width:100%;max-width:220px;height:46px;fill:var(--ink);margin-top:8px" preserveAspectRatio="none" aria-hidden="true">'+o+'</svg>'}
+function stepper(){var s=({mentors:1,mprof:1,time:2,confirm:3})[S.v];if(!s)return '';
+return '<ol class="steps">'+[1,2,3].map(function(i){var c=i<s?'done':i==s?'on':'';return '<li class="'+c+'"'+(c=='on'?' aria-current="step"':'')+'>'+(i<s?'✓ ':i+'. ')+t('s'+i)+'</li>'}).join('')+'</ol>'}
+function tags(m){return m.tp.map(function(p){return '<span class="tag">'+g(p)+'</span>'}).join('')}
+function list(){var q=S.q.toLowerCase();var r=M.filter(function(x){return (S.f=='All'||x.p==S.f)&&(!q||(x.n.join(' ')+PR[x.p].join(' ')+x.tp.map(function(p){return p.join(' ')}).join(' ')).toLowerCase().indexOf(q)>-1)});
+if(!r.length)return '<div class="card"><b>'+t('none')+'</b><p class="lead">'+t('tryAgain')+'</p><button class="btn sec" data-a="reset">'+t('clear')+'</button></div>';
+return r.map(function(x){var f=free(x);return '<div class="card"><div class="row" style="flex-wrap:nowrap"><div class="avatar">'+g(x.n)[0]+'</div><div><b>'+g(x.n)+'</b><br><span style="color:var(--mut)">'+yr(x)+' · '+g(PR[x.p])+'</span></div></div><p>'+tags(x)+'</p><p style="color:var(--mut);margin:0 0 12px">'+(f?t('slotsN')+f:t('noSlots'))+'</p><button class="btn" data-a="mprof" data-id="'+x.id+'">'+t('view')+'</button></div>'}).join('')}
+function render(k){
+document.documentElement.lang=S.L;$('lang').textContent=S.L=='ru'?'EN':'RU';
+var nv=S.u=='teacher'?[['tp','tp'],['sched','sched'],['ann','ann'],['map','map']]:S.u?[['home','home'],['sched','sched'],['jr','jr'],['ann','ann'],['mentors','ment'],['map','map'],['prof','prof']]:[];
+$('nav').innerHTML=nv.map(function(p){var on=(p[0]==S.v)||(p[0]=='mentors'&&['mprof','time','confirm','done'].indexOf(S.v)>-1);return '<button data-a="'+p[0]+'"'+(on?' aria-current="page"':'')+'>'+t(p[1])+'</button>'}).join('');
+document.documentElement.setAttribute('data-theme',S.th);$('theme').textContent=S.th=='dark'?t('thL'):t('thD');$('out').textContent=t('out');$('out').hidden=!S.u;
+var v=S.v,m=S.m?mentor():null,h='';
+if(!S.u){app.innerHTML=loginView();return}
+if(v=='home'){var GP=gpa(),AP=attPct();h='<div class="hero"><h1>'+t('hi')+esc(S.P.n.split(' ')[0])+'</h1><p class="lead" style="margin:0">'+t('heroSub')+'</p></div><div class="grid" style="margin-bottom:16px"><div class="card stat"><span>'+t('gpa')+'</span><b>'+(GP==null?'—':GP)+'</b></div><div class="card stat"><span>'+t('attP')+'</span><b>'+(AP==null?'—':AP+'%')+'</b></div><div class="card stat"><span>'+t('assign')+'</span><b>'+S.as.length+'</b></div></div><div class="grid">'+[['sched','cSched','sched','open'],['jr','cJr','jr','open'],['ann','cAnn','ann','open'],['ment','cMent','mentors','findM'],['map','cMap','map','open'],['prof','cProf','prof','open']].map(function(c){return '<div class="card"><h2>'+t(c[0])+'</h2><p class="lead" style="margin-bottom:12px">'+t(c[1])+'</p><button class="btn" data-a="'+c[2]+'">'+t(c[3])+'</button></div>'}).join('')+'</div>'}
+if(v=='sched'){var K=CL.filter(function(c){return c[0]==S.day}).sort(function(a,b){return a[1]<b[1]?-1:1});
+h='<h1>'+t('sched')+'</h1><p class="lead">'+t('schedLead')+'</p><div class="row" style="margin-bottom:16px" role="group">'+DS.map(function(d,i){return '<button class="chip" data-a="day" data-i="'+i+'" aria-pressed="'+(S.day==i)+'">'+g(d)+'</button>'}).join('')+'</div><h2>'+g(DN[S.day])+(S.day==TODAY?' <span class="badge">'+t('today')+'</span>':'')+'</h2>'+(K.length?K.map(function(c){return '<div class="card cls"><div class="tm">'+c[1]+'<br><small>'+c[2]+'</small></div><div><b>'+g(CN[c[3]])+'</b><br><span class="tag">'+t(TY[c[5]])+'</span><span class="tag">'+room(c[7])+'</span><br><span style="color:var(--mut)">'+c[4]+' ·  '+c[6]+'</span></div></div>'}).join(''):'<div class="card">'+t('noCls')+'</div>')}
+if(v=='ann'){var tc=S.u=='teacher',all=[SYS].concat(S.an.slice().reverse());
+h='<h1>'+t('ann')+'</h1><p class="lead">'+t('annLead')+'</p>'+(tc?'<div class="card" style="margin-bottom:20px"><h2>'+t('newAnn')+'</h2><label for="an-t" style="margin-top:0">'+t('annT')+'</label><input id="an-t" type="text" maxlength="80" value="'+esc(S.af.t)+'"><label for="an-b">'+t('annB')+'</label><textarea id="an-b" rows="3" maxlength="400">'+esc(S.af.b)+'</textarea>'+(S.aerr?'<div class="err" role="alert">'+t('annErr')+'</div>':'')+'<div style="margin-top:14px"><button class="btn" data-a="post">'+t('post')+'</button></div></div>':'')+all.map(function(x){return '<div class="card" style="margin-bottom:10px"><div class="row" style="justify-content:space-between"><b>'+esc(g(x.t))+'</b>'+(tc&&!x.sys?'<button class="btn sec" data-a="delan" data-id="'+x.id+'">'+t('del')+'</button>':'')+'</div><p style="margin:6px 0">'+esc(g(x.b))+'</p><span style="color:var(--mut);font-size:14px">'+t('posted')+' '+new Date(x.d+'T00:00:00').toLocaleDateString(loc(),{day:'numeric',month:'long'})+' · '+(x.sys?'UniBuddy':t('tch'))+'</span></div>'}).join('')}
+if(v=='jr'){var GP2=gpa(),AP2=attPct(),bd='';
+if(S.jt=='gr')bd='<p style="color:var(--mut);font-size:14px">'+t('demoG')+' '+t('gpaNote')+'</p><div class="tw"><table><tr><th>'+t('subj')+'</th><th>'+t('grades')+'</th><th>'+t('avg')+'</th><th>GPA</th></tr>'+SB.map(function(x){var gs=records('gr').filter(function(r){return r.s==x}),a=avg(x);return '<tr><td>'+g(CN[x])+'</td><td>'+(gs.map(function(r){return '<span class="tag">'+esc(r.t)+': <b>'+r.v+'</b></span>'}).join('')||'—')+'</td><td>'+(a==null?'—':Math.round(a))+'</td><td>'+(a==null?'—':pts(a).toFixed(2))+'</td></tr>'}).join('')+'</table></div>';
+if(S.jt=='at')bd='<div class="tw"><table><tr><th>'+t('subj')+'</th><th>'+t('present')+'</th><th>'+t('late')+'</th><th>'+t('absent')+'</th><th>%</th></tr>'+SB.map(function(x){var p=cnt(x,'p'),l=cnt(x,'l'),a=cnt(x,'a'),n=p+l+a;return '<tr><td>'+g(CN[x])+'</td><td>'+p+'</td><td>'+l+'</td><td>'+a+'</td><td>'+(n?Math.round((p+l)/n*100)+'%':'—')+'</td></tr>'}).join('')+'</table></div>'+(records('at').length?'':'<p style="color:var(--mut)">'+t('noA')+'</p>');
+if(S.jt=='as')bd=S.as.length?S.as.slice().sort(function(a,b){return a.d<b.d?-1:1}).map(function(x){return '<div class="card row" style="justify-content:space-between;margin-bottom:10px"><div><b>'+esc(x.t)+'</b><br><span style="color:var(--mut)">'+g(CN[x.s])+' · '+t('due')+x.d+'</span></div><span class="badge">'+left(x.d)+'</span></div>'}).join(''):'<div class="card">'+t('noAs')+'</div>';
+h='<h1>'+t('jr')+'</h1><div class="grid" style="margin:12px 0 16px"><div class="card stat"><span>'+t('gpa')+'</span><b>'+(GP2==null?'—':GP2)+'</b></div><div class="card stat"><span>'+t('attP')+'</span><b>'+(AP2==null?'—':AP2+'%')+'</b></div></div><div class="row" style="margin-bottom:16px" role="group">'+[['gr','grades'],['at','attend'],['as','assign']].map(function(z){return '<button class="chip" data-a="jt" data-k="'+z[0]+'" aria-pressed="'+(S.jt==z[0])+'">'+t(z[1])+'</button>'}).join('')+'</div>'+bd}
+if(v=='tp'){var tk=S.tt,fd=S.tf,opts='<option value="">'+t('choose')+'</option>'+SB.map(function(x){return '<option value="'+x+'"'+(fd.s==x?' selected':'')+'>'+g(CN[x])+'</option>'}).join('');
+var fl='<label for="tf-s">'+t('subj')+'</label><select id="tf-s">'+opts+'</select>';
+if(tk=='g')fl+='<label for="tf-t">'+t('gTitle')+'</label><input id="tf-t" type="text" maxlength="60" value="'+esc(fd.t)+'"><label for="tf-v">'+t('score')+'</label><input id="tf-v" type="number" min="0" max="100" value="'+esc(fd.v)+'">';
+if(tk=='a')fl+='<label for="tf-d">'+t('date')+'</label><input id="tf-d" type="date" value="'+fd.d+'"><label for="tf-st">'+t('status')+'</label><select id="tf-st">'+[['p','present'],['l','late'],['a','absent']].map(function(z){return '<option value="'+z[0]+'"'+(fd.st==z[0]?' selected':'')+'>'+t(z[1])+'</option>'}).join('')+'</select>';
+if(tk=='t')fl+='<label for="tf-t">'+t('gTitle')+'</label><input id="tf-t" type="text" maxlength="60" value="'+esc(fd.t)+'"><label for="tf-d">'+t('dline')+'</label><input id="tf-d" type="date" value="'+fd.d+'">';
+var col=tk=='g'?'gr':tk=='a'?'at':'as';
+var rec=S[col].slice(-8).reverse().map(function(x){var inf=tk=='g'?esc(x.t)+': <b>'+x.v+'</b>':tk=='a'?x.d+' · '+t(x.st=='p'?'present':x.st=='l'?'late':'absent'):esc(x.t)+' · '+t('due')+x.d;return '<div class="card row" style="justify-content:space-between;margin-bottom:8px"><span>'+g(CN[x.s])+' — '+inf+'</span><button class="btn sec" data-a="tdel" data-c="'+col+'" data-id="'+x.id+'">'+t('del')+'</button></div>'}).join('');
+h='<h1>'+t('tp')+'</h1><p class="lead">'+t('stu')+': '+esc(S.P.n)+'</p><div class="row" style="margin-bottom:16px" role="group">'+[['g','tGr'],['a','tAt'],['t','tTs']].map(function(z){return '<button class="chip" data-a="tt" data-k="'+z[0]+'" aria-pressed="'+(tk==z[0])+'">'+t(z[1])+'</button>'}).join('')+'</div><div class="card" style="margin-bottom:20px">'+fl+(S.terr?'<div class="err" role="alert">'+t('tErr')+'</div>':'')+'<div style="margin-top:16px"><button class="btn" data-a="tadd">'+t('add')+'</button></div></div><h2>'+t('recent')+'</h2>'+(rec||'<div class="card">—</div>')}
+if(v=='map'){h='<h1>'+t('map')+'</h1><p class="lead">'+t('mapLead')+'</p><p><a class="btn" href="'+MAP+'" target="_blank" rel="noopener"> '+t('openMap')+'</a></p>'}
+if(v=='prof'){h='<h1>'+t('prof')+'</h1><div class="card row" style="flex-wrap:nowrap;align-items:flex-start"><div class="avatar" style="width:72px;height:72px;font-size:28px">'+esc(S.P.n[0])+'</div><div style="flex:1"><dl><dt>'+t('fio')+'</dt><dd>'+esc(S.P.n)+'</dd><dt>'+t('barcode')+'</dt><dd>'+esc(S.P.b)+'</dd><dt>'+t('uni')+'</dt><dd>Astana IT University (AITU)</dd><dt>'+t('progL')+'</dt><dd>'+t('progV')+'</dd><dt>'+t('year')+'</dt><dd>'+t('yearV')+'</dd></dl>'+bars(S.P.b.replace(/[^0-9]/g,''))+'</div></div>'}
+if(v=='mentors'){h=stepper()+'<h1>'+t('findM')+'</h1><p class="lead">'+t('mLead')+'</p><label for="q" style="margin-top:0">'+t('search')+'</label><input id="q" type="search" placeholder="'+t('ph')+'" value="'+esc(S.q)+'"><div class="row" style="margin:14px 0" role="group">'+['All','cy','se','ds'].map(function(f){return '<button class="chip" data-a="filter" data-f="'+f+'" aria-pressed="'+(S.f==f)+'">'+(f=='All'?t('all'):g(PR[f]))+'</button>'}).join('')+'</div><div class="grid" id="list">'+list()+'</div>'}
+if(v=='mprof'){h=stepper()+'<button class="btn sec" data-a="back">'+t('backM')+'</button><div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:nowrap"><div class="avatar">'+g(m.n)[0]+'</div><div><h1 style="margin:0">'+g(m.n)+'</h1><span style="color:var(--mut)">'+yr(m)+' · '+g(PR[m.p])+'</span></div></div><p>'+g(m.bio)+'</p><p>'+tags(m)+'</p><p style="color:var(--mut)">'+t('slotsNext')+'<b>'+free(m)+'</b></p><button class="btn" data-a="time"'+(free(m)?'':' disabled')+'>'+t('book')+'</button></div>'}
+if(v=='time'){h=stepper()+'<button class="btn sec" data-a="back">'+t('backP')+'</button><h1 style="margin-top:16px">'+t('chooseTime')+g(m.n)+'</h1><p class="lead">'+t('tLead')+'</p>'+days.map(function(d,i){return '<h2 style="margin-top:16px">'+dl(i)+'</h2><div class="slots">'+times.map(function(tm){var tk=taken(m,i,tm),on=S.d===i&&S.t===tm;return '<button class="slot" data-a="slot" data-d="'+i+'" data-t="'+tm+'" aria-pressed="'+on+'"'+(tk?' disabled aria-label="'+tm+' '+t('taken')+'"':'')+'>'+tm+'</button>'}).join('')+'</div>'}).join('')+'<div class="row" style="margin-top:24px"><button class="btn" data-a="confirm"'+(S.t?'':' disabled')+'>'+t('cont')+'</button>'+(S.t?'<span>'+t('selected')+'<b>'+dl(S.d)+', '+S.t+'</b></span>':'<span style="color:var(--mut)">'+t('selT')+'</span>')+'</div>'}
+if(v=='confirm'){h=stepper()+'<button class="btn sec" data-a="back">'+t('chg')+'</button><h1 style="margin-top:16px">'+t('check')+'</h1><div class="card"><dl><dt>'+t('mentorL')+'</dt><dd>'+g(m.n)+' ('+g(PR[m.p])+')</dd><dt>'+t('when')+'</dt><dd>'+dl(S.d)+', '+S.t+' (15 min)</dd></dl><label for="topic">'+t('topicQ')+' <span style="color:var(--err)">*</span></label><select id="topic"><option value="">'+t('chooseTopic')+'</option>'+m.tp.map(function(p,i){return '<option value="'+i+'"'+(S.topic===''+i?' selected':'')+'>'+g(p)+'</option>'}).join('')+'<option value="o"'+(S.topic=='o'?' selected':'')+'>'+t('other')+'</option></select><label for="note">'+t('qLbl')+' <span style="color:var(--err)">*</span></label><textarea id="note" rows="3" maxlength="300" placeholder="'+t('qPh')+'">'+esc(S.note)+'</textarea>'+(S.err?'<div class="err" role="alert">'+t(S.err)+'</div>':'')+'<div class="row" style="margin-top:16px"><button class="btn" data-a="book">'+t('confirmB')+'</button><button class="btn sec" data-a="mentors">'+t('cancel')+'</button></div></div>'}
+if(v=='done'){h='<div class="ok"><h1> '+t('done')+'</h1><p>'+g(m.n)+t('doneP')+'</p><dl><dt>'+t('mentorL')+'</dt><dd>'+g(m.n)+'</dd><dt>'+t('when')+'</dt><dd>'+dl(S.d)+', '+S.t+'</dd><dt>'+t('topicL')+'</dt><dd>'+(S.topic=='o'?t('other'):g(m.tp[+S.topic]))+'</dd><dt>'+t('qL')+'</dt><dd>'+esc(S.note)+'</dd></dl><div class="row"><button class="btn" data-a="mentors">'+t('another')+'</button><button class="btn dng" data-a="cancelbk">'+t('cancelB')+'</button></div>'+(TEST?'<p class="fac">Facilitator data: time '+Math.round((S.tEnd-S.t0)/1000)+' s · backtracks '+S.backs+'</p>':'')+'</div>'}
+app.innerHTML=h;
+if(!k){window.scrollTo(0,0);var hh=app.querySelector('h1');if(hh){hh.setAttribute('tabindex','-1');hh.focus({preventScroll:true})}}}
+function go(v){if(!S.u)return;if(v=='home'&&S.u=='teacher')v='tp';S.v=v;render()}
+function reset(){S.d=null;S.t=null;S.topic='';S.note='';S.err=''}
+document.addEventListener('input',function(e){var i=e.target.id;if(i=='lg-l')S.lf.l=e.target.value;if(i=='lg-p')S.lf.p=e.target.value;if(i&&i.indexOf('tf-')==0)S.tf[i.slice(3)]=e.target.value;if(i=='q'){S.q=e.target.value;$('list').innerHTML=list()}if(i=='topic')S.topic=e.target.value;if(i=='note')S.note=e.target.value;if(i=='an-t')S.af.t=e.target.value;if(i=='an-b')S.af.b=e.target.value});
+document.addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(!b||b.disabled)return;var a=b.dataset.a;if(!S.t0)S.t0=Date.now();
+if(a=='home'||a=='sched'||a=='ann'||a=='map'||a=='prof'||a=='jr'||a=='tp')go(a);
+else if(a=='theme'){S.th=S.th=='dark'?'light':'dark';save();render(1)}
+else if(a=='logout'){S.u=null;S.v='home';S.lf={l:'',p:''};S.lerr='';render()}
+else if(a=='lr'){S.lr=b.dataset.r;S.lf={l:'',p:''};S.lerr='';render(1)}
+else if(a=='jt'){S.jt=b.dataset.k;render(1)}
+else if(a=='tt'){S.tt=b.dataset.k;S.tf={s:'',t:'',v:'',d:b.dataset.k=='a'?ymd(new Date()):'',st:'p'};S.terr='';render(1)}
+else if(a=='tdel'&&S.u=='teacher'){var cc=b.dataset.c;S[cc]=S[cc].filter(function(x){return x.id!=b.dataset.id});save();render(1);toast(t('deleted'))}
+else if(a=='tadd'&&S.u=='teacher'){var f=S.tf,q=S.tt,bad=!f.s;
+if(q=='g'){var sc=parseFloat(f.v);bad=bad||f.t.trim().length<2||isNaN(sc)||sc<0||sc>100;if(!bad)S.gr.push({id:Date.now(),s:f.s,t:f.t.trim(),v:Math.round(sc)})}
+if(q=='a'){bad=bad||!f.d;if(!bad)S.at.push({id:Date.now(),s:f.s,d:f.d,st:f.st})}
+if(q=='t'){bad=bad||f.t.trim().length<2||!f.d;if(!bad)S.as.push({id:Date.now(),s:f.s,t:f.t.trim(),d:f.d})}
+if(bad){S.terr=1;render(1);return}
+S.tf={s:'',t:'',v:'',d:q=='a'?ymd(new Date()):'',st:'p'};S.terr='';save();render(1);toast(t('saved'))}
+else if(a=='lang'){S.L=S.L=='ru'?'en':'ru';save();render(1)}
+else if(a=='day'){S.day=+b.dataset.i;render(1)}
+else if(a=='post'&&S.u=='teacher'){if(S.af.t.trim().length<2||S.af.b.trim().length<5){S.aerr=1;render(1);return}S.an.push({id:Date.now(),t:S.af.t.trim(),b:S.af.b.trim(),d:new Date().toISOString().slice(0,10)});S.af={t:'',b:''};S.aerr='';save();render(1);toast(t('posted2'))}
+else if(a=='delan'&&S.u=='teacher'){S.an=S.an.filter(function(x){return x.id!=b.dataset.id});save();render(1);toast(t('removed'))}
+else if(a=='mentors'){if(S.v=='confirm'||S.v=='done')reset();go('mentors')}
+else if(a=='filter'){S.f=b.dataset.f;render(1)}
+else if(a=='reset'){S.q='';S.f='All';render(1)}
+else if(a=='mprof'){S.m=+b.dataset.id;S.d=null;S.t=null;go('mprof')}
+else if(a=='time')go('time');
+else if(a=='slot'){S.d=+b.dataset.d;S.t=b.dataset.t;render(1)}
+else if(a=='confirm'){S.err='';go('confirm')}
+else if(a=='back'){S.backs++;go(S.v=='confirm'?'time':S.v=='time'?'mprof':'mentors')}
+else if(a=='book'){if(S.topic===''){S.err='e1';render(1);return}if(S.note.trim().length<10){S.err='e2';render(1);return}S.booked.push(S.m+'|'+S.d+'|'+S.t);S.tEnd=Date.now();S.err='';go('done')}
+else if(a=='cancelbk'){S.booked.pop();reset();toast(t('cancelled'));go('mentors')}
+});
+document.addEventListener('submit',function(e){e.preventDefault();if(e.target.id=='lf')doLogin()});
+// UniBuddy local demo: data relationships are kept behind a single store.
+var DB, UX={group:'g1',student:'s1',tab:'grade',month:ymd(new Date()).slice(0,7),day:ymd(new Date()),filter:'all',query:'',editStudent:null,editGroup:null};
+function tr(ru,en){return S.L==='ru'?ru:en}
+function uid(){return 'u'+Date.now().toString(36)+Math.random().toString(36).slice(2,9)}
+function student(id){return DB.students.find(x=>x.id===id)}
+function group(id){return DB.groups.find(x=>x.id===id)}
+function teacher(id){return DB.teachers.find(x=>x.id===id)}
+function current(){return student(S.userId)}
+function groupName(id){return group(id)?.name||tr('Без группы','No group')}
+function isStaff(){return S.u==='teacher'||S.u==='admin'}
+function allowedGroups(){return DB.groups.filter(x=>S.u==='admin'||x.teachers.includes(S.userId))}
+function allowedStudents(){return DB.students.filter(x=>S.u==='admin'||allowedGroups().some(g=>g.id===x.groupId))}
+function records(col){return S.u==='student'?S[col].filter(x=>x.studentId===S.userId):S[col]}
+function assigned(task,id){var st=student(id);return !!st&&(task.targetType==='student'?task.targetId===id:task.targetId===st.groupId)}
+function tasks(){return S.as.filter(x=>S.u==='student'?assigned(x,S.userId):S.u==='admin'||(x.targetType==='group'?allowedGroups().some(g=>g.id===x.targetId):allowedStudents().some(s=>s.id===x.targetId)))}
+function stateOf(task,id){var st=task.progress?.[id]||'todo';return st!=='done'&&task.d<ymd(new Date())?'overdue':st}
+function stateLabel(st){return ({todo:tr('Не начато','Not started'),doing:tr('В работе','In progress'),done:tr('Сдано','Submitted'),overdue:tr('Просрочено','Overdue')})[st]}
+function targetLabel(x){return x.targetType==='group'?groupName(x.targetId):student(x.targetId)?.name||'—'}
+function save(){try{localStorage.setItem('ub4',JSON.stringify({version:4,L:S.L,th:S.th,an:S.an,gr:S.gr,at:S.at,as:S.as,db:DB}));return true}catch(e){toast(tr('Не удалось сохранить: проверь свободное место и доступ к хранилищу браузера.','Could not save: check browser storage permissions and space.'));return false}}
+function load(){var o={},legacy={};try{o=JSON.parse(localStorage.getItem('ub4')||'null')||{};legacy=JSON.parse(localStorage.getItem('ub3')||'{}')||{}}catch(e){toast(tr('Не удалось прочитать сохранённые данные.','Could not read saved data.'))}
+  var src=o.version===4?o:legacy;S.L=src.L==='en'?'en':'ru';S.th=src.th==='dark'?'dark':'light';S.an=src.an||[];S.gr=src.gr||SEED.map((x,i)=>({id:i+1,s:x[0],t:x[1],v:x[2]}));S.at=src.at||[];S.as=src.as||[];
+  DB=o.db||{students:[{id:'s1',name:S.P.n,barcode:S.P.b,login:'ALIZHAN',password:'12345',groupId:'g1'}],teachers:[{id:'t1',name:'Преподаватель AITU',login:'ALIZHAN1',password:'54321'}],groups:[{id:'g1',name:'CY-2501',teachers:['t1']}],events:[],bookings:[]};
+  S.gr.forEach(x=>{if(!x.studentId)x.studentId='s1'});S.at.forEach(x=>{if(!x.studentId)x.studentId='s1'});S.as.forEach(x=>{if(!x.targetType){x.targetType='student';x.targetId='s1'}if(!x.progress)x.progress={}});
+}
+async function doLogin(){if(Date.now()<S.lock)return;if(SYNCING)return toast(tr('Подключаюсь к базе данных…','Connecting to the database…'));var loginField=$('lg-l'),passwordField=$('lg-p');if(!loginField||!passwordField)return;S.lf={l:loginField.value,p:passwordField.value};var login=S.lf.l.trim().toUpperCase(),p=S.lf.p;
+  var found=null;if(S.lr==='admin'){if(login==='ADMIN'&&p==='admin123')found={id:'admin'}}else{var cand=(S.lr==='teacher'?DB.teachers:DB.students).find(x=>x.login.toUpperCase()===login);if(cand&&(cand.password===p||(window.crypto&&crypto.subtle&&cand.password===PF+await H(cand.id+':'+p))))found=cand}
+  if(found){S.u=S.lr;S.userId=found.id;S.jt='gr';UX.filter='all';UX.tab='grade';UX.day=ymd(new Date());UX.month=UX.day.slice(0,7);S.bookingId=null;S.fails=0;S.lerr='';S.lf={l:'',p:''};UX.group=allowedGroups()[0]?.id||DB.groups[0]?.id||'';UX.student=allowedStudents()[0]?.id||'';S.v=S.u==='admin'?'admin':S.u==='teacher'?'tp':'home';render()}else{S.fails++;if(S.fails>=5){S.lock=Date.now()+30000;S.fails=0}S.lerr='liErr';S.lf.p='';render(1)}
+}
+loginView=function(){
+ var locked=Date.now()<S.lock,roles=[['student',t('stu')],['teacher',t('tch')],['admin',tr('Администратор','Administrator')]];
+ var demo={student:['ALIZHAN','12345'],teacher:['ALIZHAN1','54321'],admin:['ADMIN','admin123']}[S.lr];
+ return '<div class="card" style="max-width:460px;margin:40px auto"><h1>'+t('liT')+'</h1><p class="lead">UniBuddy · AITU</p><div class="row" role="group" aria-label="'+tr('Роль','Role')+'">'+roles.map(r=>'<button type="button" class="chip" data-a="lr" data-r="'+r[0]+'" aria-pressed="'+(S.lr===r[0])+'">'+r[1]+'</button>').join('')+'</div><form id="lf"><label for="lg-l">'+t('lg')+'</label><input id="lg-l" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required value="'+esc(S.lf.l)+'"'+(locked?' disabled':'')+'><label for="lg-p">'+t('pw')+'</label><input id="lg-p" name="password" type="password" autocomplete="current-password" required value="'+esc(S.lf.p)+'"'+(locked?' disabled':'')+'>'+(locked?'<div class="err" id="login-lock" role="alert">'+t('lock')+Math.ceil((S.lock-Date.now())/1000)+t('sec')+'</div>':S.lerr?'<div class="err" role="alert">'+t(S.lerr)+'</div>':'')+'<div class="form-actions"><button class="btn" type="button" data-local-submit'+(locked?' disabled':'')+'>'+t('sign')+'</button></div></form></div><div class="demo-note">'+tr('Локальная демоверсия · данные сохраняются в этом браузере. Для нового аккаунта используй логин и пароль, заданные администратором.','Local demo · data is saved in this browser. For a new account, use the login and password set by the administrator.')+'</div>';
+};
+setInterval(function(){
+ if(S.u||!S.lock)return;
+ if(Date.now()>=S.lock){S.lock=0;S.lerr='';render(1)}
+ else if($('login-lock'))$('login-lock').textContent=t('lock')+Math.ceil((S.lock-Date.now())/1000)+t('sec');
+},1000);
+avg=function(x){var a=records('gr').filter(r=>r.s===x);return a.length?a.reduce((p,r)=>p+r.v,0)/a.length:null};
+attPct=function(){var a=records('at');return a.length?Math.round(a.filter(x=>x.st!=='a').length/a.length*100):null};
+cnt=function(x,st){return records('at').filter(r=>r.s===x&&r.st===st).length};
+function opt(value,label,selected){return '<option value="'+esc(value)+'"'+(value===selected?' selected':'')+'>'+esc(label)+'</option>'}
+function field(id,label,type,value,attrs){return '<div class="field"><label for="'+id+'">'+label+'</label><input id="'+id+'" name="'+id+'" type="'+type+'" value="'+esc(value||'')+'" '+(attrs||'required maxlength="100"')+'></div>'}
+function select(id,label,html){return '<div class="field"><label for="'+id+'">'+label+'</label><select id="'+id+'" name="'+id+'" '+(id==='st-group'?'':'required')+'>'+html+'</select></div>'}
+function submitButton(){return '<div class="form-actions"><button class="btn" type="button" data-local-submit>'+t('add')+'</button></div>'}
+function empty(text){return '<div class="card empty">'+text+'</div>'}
+function button(a,label,id,cls){return '<button type="button" class="btn '+(cls||'sec')+'" data-x="'+a+'"'+(id?' data-id="'+esc(id)+'"':'')+'>'+label+'</button>'}
+function adminView(){var st=student(UX.editStudent)||{},gr=group(UX.editGroup)||{};
+ return '<h1>'+tr('Администрирование','Administration')+'</h1><p class="lead">'+tr('Студенты, учебные группы и преподаватели','Students, study groups and teachers')+'</p><div class="grid stats"><div class="card stat"><span>'+tr('Студенты','Students')+'</span><b>'+DB.students.length+'</b></div><div class="card stat"><span>'+tr('Группы','Groups')+'</span><b>'+DB.groups.length+'</b></div><div class="card stat"><span>'+tr('Преподаватели','Teachers')+'</span><b>'+DB.teachers.length+'</b></div></div><div class="grid manage-grid"><form id="student-form" class="card"><h2>'+tr(st.id?'Редактировать студента':'Добавить студента',st.id?'Edit student':'Add student')+'</h2>'+field('st-name',t('fio'),'text',st.name)+field('st-code',t('barcode'),'text',st.barcode)+select('st-group',tr('Группа','Group'),opt('',tr('Без группы','No group'),st.groupId)+DB.groups.map(x=>opt(x.id,x.name,st.groupId)).join(''))+field('st-login',t('lg'),'text',st.login)+field('st-pass',tr('Демо-пароль','Demo password'),'password',st.password,'required minlength="4" maxlength="80" autocomplete="new-password"')+submitButton()+(st.id?button('cancel-edit',t('cancel')):'')+'</form><div><form id="group-form" class="card"><h2>'+tr(gr.id?'Редактировать группу':'Добавить группу',gr.id?'Edit group':'Add group')+'</h2>'+field('gp-name',tr('Название группы','Group name'),'text',gr.name)+'<fieldset><legend>'+tr('Преподаватели группы','Group teachers')+'</legend>'+DB.teachers.map(x=>'<label class="check"><input type="checkbox" name="gp-teachers" value="'+esc(x.id)+'" '+((gr.teachers||[]).includes(x.id)?'checked':'')+'>'+esc(x.name)+'</label>').join('')+'</fieldset>'+submitButton()+(gr.id?button('cancel-edit',t('cancel')):'')+'</form><form id="teacher-form" class="card space"><h2>'+tr('Добавить преподавателя','Add teacher')+'</h2>'+field('tc-name',t('fio'),'text','')+field('tc-login',t('lg'),'text','')+field('tc-pass',tr('Демо-пароль','Demo password'),'password','','required minlength="4" maxlength="80" autocomplete="new-password"')+submitButton()+'</form></div></div><h2 class="space">'+tr('Группы','Groups')+'</h2><div class="grid">'+DB.groups.map(x=>'<div class="card"><b>'+esc(x.name)+'</b><p>'+tr('Студентов: ','Students: ')+DB.students.filter(s=>s.groupId===x.id).length+'</p><p class="muted">'+esc(x.teachers.map(id=>teacher(id)?.name).filter(Boolean).join(', ')||tr('Преподаватели не назначены','No teachers assigned'))+'</p><div class="row">'+button('edit-group',tr('Изменить','Edit'),x.id)+button('delete-group',t('del'),x.id,'dng')+'</div></div>').join('')+'</div><h2 class="space">'+tr('Студенты','Students')+'</h2><label for="student-search">'+tr('Поиск по имени или логину','Search by name or login')+'</label><input type="search" id="student-search" value="'+esc(UX.query)+'"><div id="student-list" class="space">'+studentTable()+'</div>';
+}
+function studentTable(){var rows=DB.students.filter(x=>(x.name+' '+x.login+' '+groupName(x.groupId)).toLowerCase().includes(UX.query.toLowerCase()));return rows.length?'<div class="tw"><table><thead><tr><th>'+t('stu')+'</th><th>'+tr('Группа','Group')+'</th><th>'+t('lg')+'</th><th>'+tr('Действия','Actions')+'</th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+esc(x.name)+'<br><small>'+esc(x.barcode)+'</small></td><td>'+esc(groupName(x.groupId))+'</td><td>'+esc(x.login)+'</td><td><div class="row">'+button('edit-student',tr('Изменить','Edit'),x.id)+button('delete-student',t('del'),x.id,'dng')+'</div></td></tr>').join('')+'</tbody></table></div>':empty(tr('Студенты не найдены','No students found'))}
+function selectedStudents(){return allowedStudents().filter(x=>x.groupId===UX.group)}
+function staffView(){var gs=allowedGroups();if(!gs.some(x=>x.id===UX.group))UX.group=gs[0]?.id||'';var ss=selectedStudents();if(UX.student!=='all'&&!ss.some(x=>x.id===UX.student))UX.student=ss[0]?.id||'';
+ var tab=UX.tab,coll=tab==='grade'?'gr':tab==='attendance'?'at':'as';
+ var heading='<h1>'+tr('Кабинет преподавателя','Teacher workspace')+'</h1><p class="lead">'+esc(S.u==='admin'?tr('Администратор','Administrator'):teacher(S.userId)?.name||'')+'</p>';
+ if(!gs.length)return heading+empty(tr('Администратор должен назначить тебе учебную группу.','Ask the administrator to assign a study group.'));
+ var selection='<div class="grid">'+select('staff-group',tr('Группа','Group'),gs.map(x=>opt(x.id,x.name,UX.group)).join(''))+select('staff-student',tr('Студент или вся группа','Student or whole group'),opt('all',tr('Вся группа','Whole group'),UX.student)+ss.map(x=>opt(x.id,x.name,UX.student)).join(''))+'</div>';
+ var form=select('entry-subject',t('subj'),SB.map(x=>opt(x,g(CN[x]),'ip')).join(''));
+ if(tab!=='attendance')form+=field('entry-title',t('gTitle'),'text','','required minlength="2" maxlength="120"');
+ if(tab==='grade')form+=field('entry-score',t('score'),'number','','required min="0" max="100" step="1"');
+ form+=field('entry-date',tab==='task'?t('dline'):t('date'),'date',ymd(new Date()),'required');
+ if(tab==='attendance')form+=select('entry-status',t('status'),[['p','present'],['l','late'],['a','absent']].map(x=>opt(x[0],t(x[1]),'p')).join(''));
+ if(tab==='task')form+='<label for="entry-note">'+tr('Описание задания','Assignment details')+'</label><textarea id="entry-note" name="entry-note" maxlength="1000" rows="3"></textarea>';
+ var rec=tab==='task'?tasks().filter(x=>x.targetType==='group'?x.targetId===UX.group:ss.some(s=>s.id===x.targetId)&&(UX.student==='all'||x.targetId===UX.student)):S[coll].filter(x=>ss.some(s=>s.id===x.studentId)&&(UX.student==='all'||x.studentId===UX.student));
+ return heading+'<div class="card space-bottom">'+selection+'</div><div class="row space-bottom">'+[['grade',t('grades')],['attendance',t('attend')],['task',t('assign')]].map(x=>'<button class="chip" data-x="staff-tab" data-id="'+x[0]+'" aria-pressed="'+(tab===x[0])+'">'+x[1]+'</button>').join('')+'</div><form id="entry-form" class="card"><h2>'+tr('Новая запись','New entry')+'</h2><p class="muted">'+tr('Получатель: ','Recipient: ')+esc(UX.student==='all'?groupName(UX.group):student(UX.student)?.name||'—')+'</p>'+form+submitButton()+'</form><h2 class="space">'+t('recent')+'</h2>'+(rec.length?rec.slice().reverse().map(x=>tab==='task'?taskCard(x,true):'<div class="card record"><div><b>'+esc(student(x.studentId)?.name||'—')+'</b><p>'+g(CN[x.s])+' · '+(tab==='grade'?esc(x.t)+' · <b>'+x.v+'/100</b>':t(x.st==='p'?'present':x.st==='l'?'late':'absent'))+'</p><small class="muted">'+esc(x.d||'')+'</small></div><button class="btn sec" data-x="delete-entry" data-col="'+coll+'" data-id="'+esc(x.id)+'">'+t('del')+'</button></div>').join(''):empty(t('noA')));
+}
+function taskCard(x,staff){var recipients=DB.students.filter(s=>assigned(x,s.id)),st=stateOf(x,S.userId),completed=recipients.filter(s=>stateOf(x,s.id)==='done').length;
+ return '<article class="card task"><div class="row between"><b>'+esc(x.t)+'</b>'+(staff?'<span class="badge">'+completed+'/'+recipients.length+' '+tr('сдано','submitted')+'</span>':'<span class="badge status-'+st+'">'+stateLabel(st)+'</span>')+'</div><p class="muted">'+g(CN[x.s])+' · '+t('due')+esc(x.d)+' · '+left(x.d)+'</p>'+(x.note?'<p class="multiline">'+esc(x.note)+'</p>':'')+(staff?'<p>'+tr('Для: ','For: ')+esc(targetLabel(x))+'</p><details><summary>'+tr('Статусы студентов','Student progress')+'</summary>'+recipients.map(s=>'<div class="record"><span>'+esc(s.name)+'</span><span class="badge status-'+stateOf(x,s.id)+'">'+stateLabel(stateOf(x,s.id))+'</span></div>').join('')+'</details><button class="btn sec space" data-x="delete-entry" data-col="as" data-id="'+esc(x.id)+'">'+t('del')+'</button>':select('progress-'+x.id,tr('Мой статус','My status'),['todo','doing','done'].map(s=>opt(s,stateLabel(s),x.progress[S.userId]||'todo')).join('')))+'</article>';
+}
+function assignmentsView(){var all=tasks(),filtered=all.filter(x=>UX.filter==='all'||stateOf(x,S.userId)===UX.filter);return '<div class="row space-bottom" role="group">'+['all','todo','doing','done','overdue'].map(st=>'<button class="chip" data-x="task-filter" data-id="'+st+'" aria-pressed="'+(UX.filter===st)+'">'+(st==='all'?t('all'):stateLabel(st))+' ('+(st==='all'?all.length:all.filter(x=>stateOf(x,S.userId)===st).length)+')</button>').join('')+'</div>'+(filtered.length?filtered.sort((a,b)=>a.d.localeCompare(b.d)).map(x=>taskCard(x,false)).join(''):empty(tr('Заданий с таким статусом нет.','No assignments with this status.')))}
+function visibleEvents(){return DB.events.filter(x=>S.u==='student'?assigned(x,S.userId):S.u==='admin'||(x.targetType==='group'?allowedGroups().some(g=>g.id===x.targetId):allowedStudents().some(s=>s.id===x.targetId)))}
+function calendarEvents(){var events=tasks().map(x=>({id:x.id,date:x.d,title:x.t,kind:'task',time:'23:59',detail:g(CN[x.s]),done:S.u==='student'&&stateOf(x,S.userId)==='done'}));
+ DB.bookings.filter(x=>S.u==='admin'||x.studentId===S.userId).forEach(x=>events.push({id:x.id,date:x.date,time:x.time,title:tr('Встреча: ','Meeting: ')+g(M.find(m=>m.id===x.mentorId)?.n||'Mentor'),detail:x.note,kind:'meeting'}));
+ visibleEvents().forEach(x=>events.push({id:x.id,date:x.date,time:x.time,title:x.title,detail:x.note,kind:x.kind}));return events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+}
+function kindLabel(k){return ({task:t('dline'),meeting:t('ment'),schedule:tr('Изменение расписания','Schedule change'),event:tr('Событие','Event')})[k]}
+function reminders(){var now=new Date(),limit=new Date();limit.setDate(limit.getDate()+7);return calendarEvents().filter(x=>!x.done&&(x.kind==='task'||new Date(x.date+'T'+(x.time||'23:59'))>=now)&&x.date<=ymd(limit))}
+function remindersView(){var events=reminders();return '<section class="card reminder space-bottom"><div class="row between"><h2>'+tr('Напоминания','Reminders')+'</h2>'+button('calendar',tr('Календарь →','Calendar →'))+'</div><p class="muted">'+tr('Просроченные задания и события на ближайшие 7 дней.','Overdue assignments and events in the next 7 days.')+'</p>'+(events.length?events.slice(0,6).map(x=>'<div class="record"><div><span class="badge">'+kindLabel(x.kind)+'</span> <b>'+esc(x.title)+'</b><br><small>'+esc(x.date)+' · '+esc(x.time)+'</small></div><span class="'+(x.date<ymd(new Date())?'danger':'muted')+'">'+left(x.date)+'</span></div>').join(''):tr('В ближайшие 7 дней напоминаний нет.','No reminders in the next 7 days.'))+'</section>'}
+function calendarView(){var events=calendarEvents(),first=new Date(UX.month+'-01T12:00:00'),offset=(first.getDay()+6)%7,total=new Date(first.getFullYear(),first.getMonth()+1,0).getDate(),cells='';
+ for(var i=0;i<offset;i++)cells+='<div class="cal-blank"></div>';
+ for(var d=1;d<=total;d++){var key=UX.month+'-'+String(d).padStart(2,'0'),count=events.filter(x=>x.date===key).length;cells+='<button class="cal-day '+(key===ymd(new Date())?'cal-today ':'')+(key===UX.day?'cal-selected':'')+'" data-x="cal-day" data-id="'+key+'" aria-label="'+key+', '+count+' '+tr('событий','events')+'" aria-pressed="'+(key===UX.day)+'"><b>'+d+'</b>'+(count?'<span class="cal-dot">'+count+'</span>':'')+'</button>'}
+ var dayEvents=events.filter(x=>x.date===UX.day);
+ var h='<h1>'+tr('Календарь','Calendar')+'</h1><p class="lead">'+tr('Дедлайны, встречи с наставниками и изменения расписания.','Deadlines, mentor meetings and schedule changes.')+'</p><div class="calendar-layout"><div class="card"><div class="row between space-bottom">'+button('prev-month','←')+'<h2>'+first.toLocaleDateString(loc(),{month:'long',year:'numeric'})+'</h2>'+button('next-month','→')+'</div><div class="calendar-grid">'+(S.L==='ru'?['Пн','Вт','Ср','Чт','Пт','Сб','Вс']:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']).map(x=>'<span class="cal-label">'+x+'</span>').join('')+cells+'</div>'+button('cal-today',t('today'))+'</div><section class="card"><h2>'+new Date(UX.day+'T12:00:00').toLocaleDateString(loc(),{day:'numeric',month:'long'})+'</h2>'+(dayEvents.length?dayEvents.map(x=>'<article class="agenda"><span class="badge">'+kindLabel(x.kind)+'</span><h3>'+esc(x.title)+'</h3><b>'+esc(x.time)+'</b><p class="muted multiline">'+esc(x.detail||'')+'</p>'+(x.kind==='meeting'&&S.u==='student'?button('cancel-meeting',tr('Отменить встречу','Cancel meeting'),x.id):'')+(isStaff()&&['schedule','event'].includes(x.kind)?button('delete-event',t('del'),x.id):'')+'</article>').join(''):'<p class="muted">'+tr('На этот день событий нет.','No events on this day.')+'</p>')+'</section></div><div class="space">'+remindersView()+'</div>';
+ if(isStaff()){var gs=allowedGroups();h+='<form id="event-form" class="card"><h2>'+tr('Добавить событие или изменение расписания','Add an event or schedule change')+'</h2>'+select('event-group',tr('Для группы','For group'),gs.map(x=>opt(x.id,x.name,UX.group)).join(''))+select('event-kind',tr('Тип','Type'),opt('schedule',kindLabel('schedule'),'schedule')+opt('event',kindLabel('event'),''))+field('event-title',tr('Название','Title'),'text','','required minlength="2" maxlength="120"')+'<div class="grid">'+field('event-date',t('date'),'date',UX.day,'required')+field('event-time',tr('Время','Time'),'time','09:00','required')+'</div><label for="event-note">'+tr('Подробности: новая аудитория, время или ссылка','Details: new room, time or link')+'</label><textarea id="event-note" name="event-note" maxlength="1000" rows="3"></textarea><p class="muted">'+tr('Изменение появится в календаре и над недельным расписанием группы.','The change will appear in the calendar and above the group timetable.')+'</p>'+submitButton()+'</form>'}return h;
+}
+var baseGo=go;
+go=function(v){if(v==='home'&&S.u==='admin')v='admin';baseGo(v)};
+var baseRender=render;
+render=function(k){if(S.u==='student'&&current())S.P={n:current().name,b:current().barcode};baseRender(k);if(!S.u)return;
+ if(S.u==='admin')$('nav').innerHTML=[['admin',tr('Студенты и группы','Students & groups')],['tp',t('tp')],['sched',t('sched')],['calendar',tr('Календарь','Calendar')]].map(x=>'<button data-x="nav" data-id="'+x[0]+'" '+(S.v===x[0]?'aria-current="page"':'')+'>'+x[1]+'</button>').join('');
+ else $('nav').insertAdjacentHTML('beforeend','<button data-x="calendar" '+(S.v==='calendar'?'aria-current="page"':'')+'>'+tr('Календарь','Calendar')+'</button>');
+ if(S.v==='admin')app.innerHTML=S.u==='admin'?adminView():empty(tr('Нет доступа','Access denied'));
+ if(S.v==='tp')app.innerHTML=isStaff()?staffView():empty(tr('Нет доступа','Access denied'));
+ if(S.v==='calendar')app.innerHTML=calendarView();
+ if(S.v==='jr'&&S.jt==='as'){var chips=app.querySelector('[role="group"]');while(chips.nextSibling)chips.nextSibling.remove();chips.insertAdjacentHTML('afterend',assignmentsView())}
+ if(S.v==='home'){var stats=app.querySelectorAll('.stat b');if(stats[2])stats[2].textContent=tasks().filter(x=>stateOf(x,S.userId)!=='done').length;app.querySelector('.hero')?.insertAdjacentHTML('afterend',remindersView())}
+ if(S.v==='prof'){app.insertAdjacentHTML('beforeend','<div class="card space"><b>'+tr('Группа: ','Group: ')+esc(groupName(current()?.groupId))+'</b></div>')}
+ if(S.v==='sched'){var updates=visibleEvents().filter(x=>x.kind==='schedule'&&x.date>=ymd(new Date()));if(updates.length)app.insertAdjacentHTML('afterbegin','<section class="card reminder space-bottom"><h2>'+kindLabel('schedule')+'</h2>'+updates.map(x=>'<p><b>'+esc(x.date)+' '+esc(x.time)+' · '+esc(x.title)+'</b><br>'+esc(x.note)+'</p>').join('')+'</section>')}
+ if(S.v==='done'){var p=app.querySelector('.ok p');if(p)p.textContent=tr('Запись сохранена в твоём календаре. В демоверсии уведомление наставнику не отправляется.','Booking saved in your calendar. This demo does not notify the mentor.')}
+ app.insertAdjacentHTML('beforeend','<p class="demo-note">'+tr('Демоверсия · данные доступны только в этом браузере · напоминания работают при открытом сайте.','Demo · data is available only in this browser · reminders work while the site is open.')+'</p>');
+};
+taken=function(m,d,tm){return m.x.includes(d+'-'+tm)||DB.bookings.some(x=>x.mentorId===m.id&&x.date===ymd(days[d])&&x.time===tm)};
+function notice(message){toast(message)}
+function loginUsed(value,except){return value.toUpperCase()==='ADMIN'||DB.students.concat(DB.teachers).some(x=>x.id!==except&&x.login.toUpperCase()===value.toUpperCase())}
+function formValue(f,n){return String(new FormData(f).get(n)||'').trim()}
+document.addEventListener('submit',function(e){var f=e.target;if(!['student-form','group-form','teacher-form','entry-form','event-form'].includes(f.id))return;e.preventDefault();
+ var v=n=>formValue(f,n);if(!f.checkValidity()){f.reportValidity();return}
+ if(['student-form','group-form','teacher-form'].includes(f.id)&&S.u!=='admin')return;
+ if(f.id==='student-form'){var login=v('st-login');if(loginUsed(login,UX.editStudent))return notice(tr('Этот логин уже занят.','This login is already in use.'));if(!v('st-name')||!v('st-code')||!login||v('st-pass').length<4)return notice(tr('Заполни все поля.','Fill all fields.'));var st={id:UX.editStudent||uid(),name:v('st-name'),barcode:v('st-code'),login:login,password:v('st-pass'),groupId:v('st-group')};if(UX.editStudent)Object.assign(student(UX.editStudent),st);else DB.students.push(st);UX.editStudent=null}
+ if(f.id==='group-form'){var name=v('gp-name');if(!name)return notice(tr('Введи название группы.','Enter a group name.'));if(DB.groups.some(x=>x.id!==UX.editGroup&&x.name.toLowerCase()===name.toLowerCase()))return notice(tr('Группа с таким названием уже существует.','A group with this name already exists.'));var gr={id:UX.editGroup||uid(),name,teachers:new FormData(f).getAll('gp-teachers').filter(id=>teacher(id))};if(UX.editGroup)Object.assign(group(UX.editGroup),gr);else DB.groups.push(gr);UX.editGroup=null}
+ if(f.id==='teacher-form'){if(loginUsed(v('tc-login')))return notice(tr('Этот логин уже занят.','This login is already in use.'));if(!v('tc-name')||!v('tc-login')||v('tc-pass').length<4)return notice(tr('Заполни все поля.','Fill all fields.'));DB.teachers.push({id:uid(),name:v('tc-name'),login:v('tc-login'),password:v('tc-pass')})}
+ if(f.id==='entry-form'){if(!isStaff())return;var ss=selectedStudents().filter(x=>UX.student==='all'||x.id===UX.student),date=v('entry-date'),subject=v('entry-subject');if(!ss.length)return notice(tr('Сначала добавь студентов в группу.','Add students to the group first.'));if(!SB.includes(subject))return;
+  if(UX.tab==='task'){if(v('entry-title').length<2)return notice(t('tErr'));S.as.push({id:uid(),s:subject,t:v('entry-title'),d:date,note:v('entry-note'),targetType:UX.student==='all'?'group':'student',targetId:UX.student==='all'?UX.group:UX.student,progress:{},authorId:S.userId})}
+  else if(UX.tab==='grade'){var score=Number(v('entry-score'));if(v('entry-title').length<2||v('entry-score')===''||!Number.isInteger(score)||score<0||score>100)return notice(t('tErr'));ss.forEach(x=>S.gr.push({id:uid(),studentId:x.id,s:subject,t:v('entry-title'),v:score,d:date,authorId:S.userId}))}
+  else {var status=v('entry-status');if(!['p','l','a'].includes(status))return;ss.forEach(x=>{var existing=S.at.find(r=>r.studentId===x.id&&r.s===subject&&r.d===date);var entry={studentId:x.id,s:subject,d:date,st:status,authorId:S.userId};if(existing)Object.assign(existing,entry);else S.at.push(Object.assign({id:uid()},entry))})}
+ }
+ if(f.id==='event-form'){if(!isStaff()||!allowedGroups().some(g=>g.id===v('event-group')))return;if(v('event-title').length<2)return notice(tr('Введи название события.','Enter an event title.'));DB.events.push({id:uid(),title:v('event-title'),date:v('event-date'),time:v('event-time'),kind:v('event-kind'),note:v('event-note'),targetType:'group',targetId:v('event-group'),authorId:S.userId});UX.day=v('event-date');UX.month=UX.day.slice(0,7)}
+ if(save()){render(1);toast(t('saved'))}
+});
+document.addEventListener('input',function(e){if(e.target.id==='student-search'){UX.query=e.target.value;$('student-list').innerHTML=studentTable()}});
+document.addEventListener('change',function(e){var id=e.target.id;
+ if(id==='staff-group'){UX.group=e.target.value;UX.student='all';render(1)}
+ if(id==='staff-student'){UX.student=e.target.value;render(1)}
+ if(id.startsWith('progress-')&&S.u==='student'){var task=S.as.find(x=>x.id===id.slice(9));if(task&&assigned(task,S.userId)&&['todo','doing','done'].includes(e.target.value)){task.progress[S.userId]=e.target.value;if(save()){render(1);toast(t('saved'))}}}
+});
+document.addEventListener('click',function(e){var b=e.target.closest('[data-x]');if(!b||!S.u)return;var a=b.dataset.x,id=b.dataset.id;
+ if(a==='calendar'||a==='nav'){S.v=a==='calendar'?'calendar':id;render();return}
+ if(a==='staff-tab'){UX.tab=id;render(1);return}
+ if(a==='task-filter'){UX.filter=id;render(1);return}
+ if(a==='cal-day'){UX.day=id;render(1);return}
+ if(a==='cal-today'){UX.day=ymd(new Date());UX.month=UX.day.slice(0,7);render(1);return}
+ if(a==='prev-month'||a==='next-month'){var date=new Date(UX.month+'-01T12:00:00');date.setMonth(date.getMonth()+(a==='next-month'?1:-1));UX.month=ymd(date).slice(0,7);UX.day=UX.month+'-01';render(1);return}
+ if(a==='cancel-meeting'){if(!DB.bookings.some(x=>x.id===id&&x.studentId===S.userId))return;if(!confirm(tr('Отменить эту встречу?','Cancel this meeting?')))return;DB.bookings=DB.bookings.filter(x=>x.id!==id)}
+ if(a==='delete-event'){if(!isStaff()||!visibleEvents().some(x=>x.id===id))return;if(!confirm(tr('Удалить событие?','Delete this event?')))return;DB.events=DB.events.filter(x=>x.id!==id)}
+ if(a==='delete-entry'){if(!isStaff())return;var col=b.dataset.col;if(!['gr','at','as'].includes(col))return;var row=S[col].find(x=>String(x.id)===id);if(!row)return;if(col==='as'?!tasks().includes(row):!allowedStudents().some(s=>s.id===row.studentId))return;if(!confirm(tr('Удалить эту запись?','Delete this entry?')))return;S[col]=S[col].filter(x=>String(x.id)!==id)}
+ if(['edit-student','edit-group','cancel-edit','delete-student','delete-group'].includes(a)){if(S.u!=='admin')return;
+  if(a==='edit-student'){UX.editStudent=id;render();return}if(a==='edit-group'){UX.editGroup=id;render();return}if(a==='cancel-edit'){UX.editStudent=null;UX.editGroup=null;render(1);return}
+  if(a==='delete-student'){if(!confirm(tr('Удалить студента вместе с его оценками, посещениями, личными заданиями и встречами?','Delete this student and their grades, attendance, personal tasks and meetings?')))return;DB.students=DB.students.filter(x=>x.id!==id);S.gr=S.gr.filter(x=>x.studentId!==id);S.at=S.at.filter(x=>x.studentId!==id);S.as=S.as.filter(x=>!(x.targetType==='student'&&x.targetId===id));S.as.forEach(x=>delete x.progress[id]);DB.bookings=DB.bookings.filter(x=>x.studentId!==id);if(UX.editStudent===id)UX.editStudent=null}
+  if(a==='delete-group'){if(DB.students.some(x=>x.groupId===id)||S.as.some(x=>x.targetType==='group'&&x.targetId===id)||DB.events.some(x=>x.targetId===id))return notice(tr('Сначала переведи студентов и удали задания и события этой группы.','Move students and remove group tasks and events first.'));if(!confirm(tr('Удалить пустую группу?','Delete this empty group?')))return;DB.groups=DB.groups.filter(x=>x.id!==id);if(UX.editGroup===id)UX.editGroup=null}
+ }
+ if(save()){render(1);toast(t('saved'))}
+});
+// Intercept booking actions so dates remain stable after a page reload.
+document.addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(!b)return;var a=b.dataset.a;if(a==='book'&&S.u==='student'){
+ e.stopImmediatePropagation();if(S.topic===''){S.err='e1';render(1);return}if(S.note.trim().length<10){S.err='e2';render(1);return}if(taken(mentor(),S.d,S.t)){toast(tr('Это время уже занято.','This time is already booked.'));go('time');return}
+ var record={id:uid(),studentId:S.userId,mentorId:S.m,date:ymd(days[S.d]),time:S.t,topic:S.topic,note:S.note.trim()};DB.bookings.push(record);S.bookingId=record.id;S.tEnd=Date.now();S.err='';if(save())go('done')
+ }else if(a==='cancelbk'&&S.u==='student'){e.stopImmediatePropagation();DB.bookings=DB.bookings.filter(x=>!(x.id===S.bookingId&&x.studentId===S.userId));save();reset();go('mentors');toast(t('cancelled'))}
+},true);
+// Recheck date-based reminders while the page stays open without resetting forms.
+setInterval(function(){if(S.u&&['home','calendar'].includes(S.v)&&!app.querySelector('input:focus,textarea:focus,select:focus')){var form=app.querySelector('form');if(!form)render(1)}},60000);
+// This is a local app, so form actions must not depend on browser navigation
+// or the allow-forms permission of an HTML preview iframe.
+function submitLocalForm(form){
+ if(!form)return;
+ if(!form.checkValidity()){form.reportValidity();return}
+ if(form.id==='lf'){doLogin();return}
+ form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+}
+document.addEventListener('click',function(e){
+ var button=e.target.closest('[data-local-submit]');
+ if(!button||button.disabled)return;
+ e.preventDefault();submitLocalForm(button.form);
+});
+document.addEventListener('keydown',function(e){
+ if(e.key!=='Enter'||e.isComposing||e.target.tagName!=='INPUT')return;
+ var form=e.target.form;
+ if(!form||!form.querySelector('[data-local-submit]'))return;
+ e.preventDefault();submitLocalForm(form);
+});
+
+// ===== Shared database (artifact "db" capability) + group chat =====
+var COLS={students:'students',teachers:'teachers',groups:'groups',events:'events',bookings:'bookings',gr:'grades',at:'attendance',as:'tasks',an:'news'};
+var DBX=null,SYNCING=true,LIVE=false,SY={},WQ=[],WB=0,ERRS=0,RESYNC=0,SNAP={},CH={gid:null,un:null,msgs:[]},PF='#sha#';
+function holder(n){return n in DB?DB:S}
+async function H(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b),function(x){return x.toString(16).padStart(2,'0')}).join('')}
+// Passwords are stored as salted SHA-256 hashes (salt = user id), never as plain text in the database.
+async function hashPw(){if(!(window.crypto&&crypto.subtle))return 0;var ch=0,all=DB.students.concat(DB.teachers);for(var i=0;i<all.length;i++){var x=all[i];if(x.password&&x.password.slice(0,5)!==PF){x.password=PF+await H(x.id+':'+x.password);ch=1}}return ch}
+function dbErr(e){toast(e&&e.code==='invalid_argument'?tr('Нет прав на запись. Попроси владельца дать доступ «Участник».','No write access. Ask the owner for Contributor access.'):tr('Ошибка базы данных: ','Database error: ')+((e&&e.code)||''))}
+function pill(){var e=$('dbst');if(!e)return;var m=!DBX?['off',tr('Автономно','Offline')]:ERRS?['err',tr('Ошибка сохранения','Save error')]:(WQ.length||WB)?['wait',tr('Сохраняю…','Saving…')]:['ok',tr('База подключена','Database connected')];e.textContent='● '+m[1];e.dataset.s=m[0]}
+function dbw(k,fn,undo){WQ.push({fn:fn,undo:undo});pill();drain()}
+async function drain(){if(WB)return;WB=1;
+ while(WQ.length){var j=WQ[0],ok=0,err=null;
+  for(var a=0;a<4&&!ok;a++){try{await j.fn();ok=1}catch(e){err=e;if(e&&(e.code==='invalid_argument'||e.code==='quota_exceeded'))break;await new Promise(function(r){setTimeout(r,400*(a+1))})}}
+  WQ.shift();if(ok)ERRS=0;else{ERRS=1;if(j.undo)j.undo();dbErr(err)}pill()}
+ WB=0;pill();
+ if(RESYNC){RESYNC=0;var sn=SNAP;SNAP={};Object.keys(sn).forEach(function(n){adopt(n,sn[n])});soft()}}
+function cmp(a,b){var x=a.id,y=b.id,p=typeof x==='number',q=typeof y==='number';return p&&q?x-y:p?-1:q?1:String(x)<String(y)?-1:1}
+function adopt(n,snap){var rows=snap.docs.map(function(d){return JSON.parse(JSON.stringify(d.data()))}).sort(cmp);holder(n)[n]=rows;SY[n]={};rows.forEach(function(x){SY[n][String(x.id)]=JSON.stringify(x)})}
+// One document per record; only changed/removed records are written.
+function dbPush(){if(!DBX||!LIVE)return;Object.keys(COLS).forEach(function(n){var seen={},m=SY[n],c=COLS[n];
+ holder(n)[n].forEach(function(x){var id=String(x.id),j=JSON.stringify(x);seen[id]=1;if(m[id]!==j){m[id]=j;dbw(c+'/'+id,function(){return DBX.doc(c+'/'+id).set(JSON.parse(j))},function(){if(SY[n])delete SY[n][id]})}});
+ Object.keys(m).forEach(function(id){if(!seen[id]){var old=m[id];delete m[id];dbw(c+'/'+id,function(){return DBX.doc(c+'/'+id).delete()},function(){if(SY[n])SY[n][id]=old})}})})}
+function soft(){clearTimeout(soft.h);soft.h=setTimeout(function(){if(S.u&&!app.querySelector('input:focus,textarea:focus,select:focus'))render(1)},200)}
+async function dbInit(){
+ try{DBX=window.claude&&claude.use?await claude.use('db'):null}catch(e){DBX=null}
+ if(!DBX){SYNCING=false;return}
+ try{
+  var meta=await DBX.doc('meta/init').get(),first={},keys=Object.keys(COLS),need=keys.length;
+  await new Promise(function(ok,bad){keys.forEach(function(n){var got=0;DBX.collection(COLS[n]).onSnapshot(function(s){if(!LIVE){first[n]=s;if(!got){got=1;if(--need===0)ok()}}else{if(WQ.length||WB){SNAP[n]=s;RESYNC=1}else{adopt(n,s);soft()}}},bad)})});
+  var empty=keys.every(function(n){return !first[n].size});
+  if(meta.exists||!empty)keys.forEach(function(n){adopt(n,first[n])});
+  else{await hashPw();keys.forEach(function(n){SY[n]={}})}
+  LIVE=true;SYNCING=false;pill();
+  if(!meta.exists){dbw('meta/init',function(){return DBX.doc('meta/init').set({at:Date.now()})});if(empty){baseSave();dbPush()}}
+  render(1)
+ }catch(e){DBX=null;LIVE=false;SYNCING=false;pill();toast(tr('База данных недоступна — работаю локально.','Database unavailable — working locally.'))}
+}
+var baseSave=save;
+save=function(){var ok;if(LIVE){var tt=toast;toast=function(){};try{baseSave()}finally{toast=tt}ok=true}else ok=baseSave();if(ok)hashPw().catch(function(){return 0}).then(function(c){if(c)baseSave();dbPush()});return ok};
+
+// ----- Group chat: one document per message, last 300 kept per group -----
+function chatList(){return CH.msgs.length?CH.msgs.map(function(m){return '<div class="msg'+(m.uid===S.userId?' me':'')+'"><b>'+esc(m.name)+'</b> <small class="muted">'+new Date(m.ts).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</small>'+(m.uid===S.userId||isStaff()?' <button type="button" class="chip" data-c="del" data-id="'+esc(m.id)+'" aria-label="'+t('del')+'">×</button>':'')+'<div class="multiline">'+esc(m.text)+'</div></div>'}).join(''):'<p class="muted">'+tr('Пока нет сообщений. Напиши первым!','No messages yet. Be the first!')+'</p>'}
+function chatCard(gid){return '<section class="card space" id="chat"><h2>'+tr('Чат группы: ','Group chat: ')+esc(groupName(gid))+'</h2>'+(DBX?'<div id="chat-list" class="chat-list">'+chatList()+'</div><div class="row"><input id="chat-in" type="text" maxlength="500" autocomplete="off" placeholder="'+tr('Напиши сообщение…','Write a message…')+'" style="flex:1;min-width:160px"><button type="button" class="btn" data-c="send">'+tr('Отправить','Send')+'</button></div>':'<p class="muted">'+tr('Чат работает при подключении к общей базе данных.','The chat needs the shared database connection.')+'</p>')+'</section>'}
+function chatClose(){if(CH.un)CH.un();CH.un=null;CH.gid=null;CH.msgs=[]}
+function chatOpen(gid){if(!DBX)return;var l=$('chat-list');if(CH.gid===gid){if(l)l.scrollTop=l.scrollHeight;return}chatClose();CH.gid=gid;
+ CH.un=DBX.collection('chats/'+gid+'/messages').orderBy('ts','desc').limit(100).onSnapshot(function(s){CH.msgs=s.docs.map(function(d){return d.data()}).reverse();var l2=$('chat-list');if(l2){l2.innerHTML=chatList();l2.scrollTop=l2.scrollHeight}},function(){CH.gid=null})}
+function chatSend(){var i=$('chat-in');if(!i||!CH.gid)return;var text=i.value.trim();if(!text)return;
+ var me=S.u==='student'?current()?.name:S.u==='teacher'?teacher(S.userId)?.name:tr('Администратор','Administrator'),id=uid(),base='chats/'+CH.gid+'/messages';i.value='';
+ dbw(base+'/'+id,function(){return DBX.doc(base+'/'+id).set({id:id,gid:CH.gid,uid:S.userId,name:me||'?',text:text.slice(0,500),ts:Date.now()})});
+ if(Math.random()<0.1)DBX.collection(base).orderBy('ts','desc').limit(400).get().then(function(s){s.docs.slice(300).forEach(function(d){dbw(base+'/'+d.id,function(){return DBX.doc(base+'/'+d.id).delete()})})}).catch(function(){})}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-c]');if(!b||!DBX||!CH.gid)return;
+ if(b.dataset.c==='send')chatSend();
+ if(b.dataset.c==='del'){var p='chats/'+CH.gid+'/messages/'+b.dataset.id;dbw(p,function(){return DBX.doc(p).delete()})}});
+document.addEventListener('keydown',function(e){if(e.target.id==='chat-in'&&e.key==='Enter'&&!e.isComposing){e.preventDefault();chatSend()}});
+var renderNoChat=render;
+render=function(k){renderNoChat(k);pill();
+ var gid=S.u==='student'&&S.v==='prof'?current()?.groupId:S.u&&isStaff()&&S.v==='tp'?UX.group:'',dn=app.querySelector('.demo-note'),on=DBX&&LIVE;
+ if(dn)dn.textContent=on?(S.u?tr('Общая база данных подключена · изменения видят все пользователи.','Shared database connected · everyone sees changes.'):tr('Аккаунты создаёт администратор · данные хранятся в общей базе.','Accounts are created by the administrator · data is stored in a shared database.')):tr('Автономный режим · данные только в этом браузере.','Offline mode · data stays in this browser only.');
+ if(!gid){chatClose();if(S.u==='student'&&S.v==='prof'){var nd='<section class="card space"><h2>'+tr('Чат группы','Group chat')+'</h2><p class="muted">'+tr('Тебя ещё не добавили в группу. Чат появится, когда администратор назначит группу.','You are not in a group yet. The chat appears once the administrator assigns one.')+'</p></section>';dn?dn.insertAdjacentHTML('beforebegin',nd):app.insertAdjacentHTML('beforeend',nd)}return}
+ var html=chatCard(gid);dn?dn.insertAdjacentHTML('beforebegin',html):app.insertAdjacentHTML('beforeend',html);chatOpen(gid)};
+
+load();render();dbInit();
+</script>
+</body>
+</html>
